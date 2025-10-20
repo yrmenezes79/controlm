@@ -1,6 +1,6 @@
 ---
-- name: Instalar Java, csh e criar usuário ctmuser com grupo controlm
-  hosts: all
+- name: Instalar Java, csh e configurar usuário ctmuser
+  hosts: localhost
   become: true
   gather_facts: no
 
@@ -12,7 +12,7 @@
     - name: Instalar Java e csh
       ansible.builtin.dnf:
         name:
-          - java-21-openjdk
+          - java-17-openjdk
           - csh
         state: present
 
@@ -21,18 +21,26 @@
         name: controlm
         state: present
 
-    - name: Criar usuário ctmuser com grupo principal controlm e shell csh
+    - name: Criar diretório /ctmuser
+      ansible.builtin.file:
+        path: /ctmuser
+        state: directory
+        owner: ctmuser
+        group: controlm
+        mode: '0755'
+
+    - name: Criar usuário ctmuser com home /ctmuser e shell csh
       ansible.builtin.user:
         name: ctmuser
         group: controlm
         shell: /bin/csh
-        home: /home/ctmuser
-        create_home: yes
+        home: /ctmuser
+        create_home: no
         state: present
 
-    - name: Garantir permissões corretas no diretório home
+    - name: Garantir permissões corretas no diretório /ctmuser
       ansible.builtin.file:
-        path: /home/ctmuser
+        path: /ctmuser
         owner: ctmuser
         group: controlm
         mode: '0755'
