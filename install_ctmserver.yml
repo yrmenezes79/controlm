@@ -21,12 +21,10 @@
         name: controlm
         state: present
 
-    - name: Criar diretório /ctmuser
+    - name: Criar diretório /ctmuser (sem ownership ainda)
       ansible.builtin.file:
         path: /ctmuser
         state: directory
-        owner: ctmuser
-        group: controlm
         mode: '0755'
 
     - name: Criar usuário ctmuser com home /ctmuser e shell csh
@@ -38,7 +36,7 @@
         create_home: no
         state: present
 
-    - name: Garantir permissões corretas no diretório /ctmuser
+    - name: Ajustar permissões do diretório /ctmuser
       ansible.builtin.file:
         path: /ctmuser
         owner: ctmuser
